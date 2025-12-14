@@ -102,15 +102,23 @@ func (cm CryptoMachine) GetRotors() []Rotor {
 	return cm.Rotors
 }
 
+func (cm CryptoMachine) Encrypt(c string) int {
+	character, _ := strconv.Atoi(c) //cast character into ascii
+
+	for i := 0; i < len(cm.GetRotors()); i++ {
+		character = cm.GetRotors()[i].Cipher(character) //encrypt the character with j rotor and assign it
+	}
+
+	return character
+}
+
 //non member funcs
 
 func RunEncryption(cm CryptoMachine, message string) {
 	var i int
+
 	for i = 0; i < len(message); i++ {
-		var character int = int(message[i]) //cast character into ascii
-		for j := 0; j < len(cm.GetRotors()); j++ {
-			character = cm.GetRotors()[j].Cipher(character) //encrypt the character with j rotor and assign it
-		}
+		var character int = cm.Encrypt(string(message[i]))
 		fmt.Print(character, " ")
 	}
 
