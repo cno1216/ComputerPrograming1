@@ -102,37 +102,37 @@ func (cm CryptoMachine) GetRotors() []Rotor {
 	return cm.Rotors
 }
 
-func (cm CryptoMachine) Encrypt(c string) int {
-	character, _ := strconv.Atoi(c) //cast character into ascii
-
+func (cm CryptoMachine) Encrypt(c int) int {
 	for i := 0; i < len(cm.GetRotors()); i++ {
-		character = cm.GetRotors()[i].Cipher(character) //encrypt the character with j rotor and assign it
+		c = cm.GetRotors()[i].Cipher(c)
 	}
+	return c
+}
 
-	return character
+func (cm CryptoMachine) Decrypt(c int) string {
+	for i := len(cm.GetRotors()) - 1; i >= 0; i-- {
+		c = cm.GetRotors()[i].Decipher(c)
+	}
+	return string(c)
 }
 
 //non member funcs
 
 func RunEncryption(cm CryptoMachine, message string) {
-	var i int
-
-	for i = 0; i < len(message); i++ {
-		var character int = cm.Encrypt(string(message[i]))
+	for i := 0; i < len(message); i++ {
+		//convert character into ascii then encrypt
+		var character int = cm.Encrypt(int(message[i]))
 		fmt.Print(character, " ")
 	}
-
 }
 
 func RunDecryption(cm CryptoMachine, message string) {
 	var characters []string = strings.Split(message, " ")
 
 	for i := 0; i < len(characters); i++ {
+		//convert to int
 		character, _ := strconv.Atoi(characters[i])
-		for j := len(cm.GetRotors()) - 1; j >= 0; j-- {
-			character = cm.GetRotors()[j].Decipher(character)
-		}
-		fmt.Print(string(character))
+		fmt.Print(cm.Decrypt(character))
 	}
 }
 
